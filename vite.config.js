@@ -20,5 +20,7 @@ export default defineConfig({
   build: {
     port: 5002,
     target: "esnext",
+    minify: false,
+    cssCodeSplit: false,
   },
 });

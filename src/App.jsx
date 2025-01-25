@@ -1,9 +1,62 @@
-function App() {
+import { useEffect, useState } from "react";
+import { fetchBooks } from "./api/api";
+import BookItem from "./components/BookItem";
+
+const App = () => {
+  const [books, setBooks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const getBooksFromGoogleApi = async (query) => {
+    try {
+      setIsLoading(true);
+      const data = await fetchBooks(query);
+      setBooks(data);
+    } catch (err) {
+      setError("Failed to fetch books");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getAction = (actionType) => {
+    const actions = {
+      SEARCH_BOOK_LIST: getBooksFromGoogleApi,
+    };
+    return (
+      actions[actionType] ||
+      (() => console.warn("Unsupported action type received."))
+    );
+  };
+
+  useEffect(() => {
+    getBooksFromGoogleApi("javascript");
+
+    return () => {};
+  }, []);
+
+  const showSingleBook = (id) => {};
+
   return (
-    <>
-      <div className="text-red-400 text-3xl">Hello Book List</div>
-    </>
+    <div className="flex w-full overflow-hidden h-full items-center justify-center">
+      {isLoading ? (
+        <p className="text-center text-lg">Loading books...</p>
+      ) : error ? (
+        <p className="text-center text-lg text-red-500">{error}</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 p-4 w-4/5">
+          {books.map((book) => (
+            <BookItem
+              key={book.id}
+              book={book}
+              onShowSingleBook={() => showSingleBook(book.id)}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
-}
+};
 
 export default App;
