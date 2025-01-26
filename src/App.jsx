@@ -4,7 +4,7 @@ import BookItem from "./components/BookItem";
 import { useGlobalContext } from "host/GlobalContext";
 
 const App = () => {
-  const { cart, setCart, setSelectedBook, searchText } = useGlobalContext();
+  const { setCart, setSelectedBook, searchText } = useGlobalContext();
 
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -30,7 +30,30 @@ const App = () => {
   }, [searchText]);
 
   const showSingleBook = (id) => {
+    console.log("selected book id", id);
     setSelectedBook(id);
+  };
+
+  const addSingleBookToCart = (book) => {
+    const data = {
+      title: book.volumeInfo.title,
+      image: book.volumeInfo.imageLinks?.thumbnail,
+      bookId: book.id,
+      quantity: 1,
+    };
+
+    setCart((prevCart) => {
+      const existingItemIndex = prevCart.findIndex(
+        (item) => item.bookId === data.bookId
+      );
+      if (existingItemIndex !== -1) {
+        const updatedCart = [...prevCart];
+        updatedCart[existingItemIndex].quantity += data.quantity;
+        return updatedCart;
+      } else {
+        return [...prevCart, { ...data, quantity: data.quantity }];
+      }
+    });
   };
 
   return (
@@ -47,7 +70,7 @@ const App = () => {
               book={book}
               onShowSingleBook={() => showSingleBook(book.id)}
               handleAddToCart={(book) => {
-                setCart([...cart, book]);
+                addSingleBookToCart(book);
               }}
             />
           ))}

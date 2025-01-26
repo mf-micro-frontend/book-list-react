@@ -13,7 +13,7 @@ const BookItem = ({ book, onShowSingleBook, handleAddToCart }) => {
 
   return (
     <button
-      className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300"
+      className="bg-white shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300 cursor-pointer"
       onClick={showSingleBook}
       onKeyDown={(e) => e.key === "Enter" && showSingleBook()}
       aria-label={`Show details for ${book.volumeInfo.title}`}
