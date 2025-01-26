@@ -1,8 +1,10 @@
 import Button from "./Button";
+import PropTypes from "prop-types";
 
-const BookItem = ({ book, onShowSingleBook }) => {
+const BookItem = ({ book, onShowSingleBook, handleAddToCart }) => {
   const addToCart = (e) => {
     e.stopPropagation();
+    handleAddToCart(book);
   };
 
   const showSingleBook = () => {
@@ -43,6 +45,11 @@ const BookItem = ({ book, onShowSingleBook }) => {
       </div>
     </button>
   );
+};
+BookItem.propTypes = {
+  book: PropTypes.object.isRequired,
+  onShowSingleBook: PropTypes.func.isRequired,
+  handleAddToCart: PropTypes.func.isRequired,
 };
 
 export default BookItem;

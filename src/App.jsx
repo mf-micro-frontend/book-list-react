@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { fetchBooks } from "./api/api";
 import BookItem from "./components/BookItem";
+import { useGlobalContext } from "host/GlobalContext";
 
 const App = () => {
+  const { cart, setCart, setSelectedBook, searchText } = useGlobalContext();
+
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,23 +23,15 @@ const App = () => {
     }
   };
 
-  const getAction = (actionType) => {
-    const actions = {
-      SEARCH_BOOK_LIST: getBooksFromGoogleApi,
-    };
-    return (
-      actions[actionType] ||
-      (() => console.warn("Unsupported action type received."))
-    );
-  };
-
   useEffect(() => {
-    getBooksFromGoogleApi("javascript");
+    getBooksFromGoogleApi(searchText);
 
     return () => {};
-  }, []);
+  }, [searchText]);
 
-  const showSingleBook = (id) => {};
+  const showSingleBook = (id) => {
+    setSelectedBook(id);
+  };
 
   return (
     <div className="flex w-full overflow-hidden h-full items-center justify-center">
@@ -51,6 +46,9 @@ const App = () => {
               key={book.id}
               book={book}
               onShowSingleBook={() => showSingleBook(book.id)}
+              handleAddToCart={(book) => {
+                setCart([...cart, book]);
+              }}
             />
           ))}
         </div>
