@@ -4,7 +4,7 @@ import BookItem from "./components/BookItem";
 import { useGlobalContext } from "host/GlobalContext";
 
 const App = () => {
-  const { setCart, setSelectedBook, searchText } = useGlobalContext();
+  const { addToCart, setSelectedBook, searchText } = useGlobalContext();
 
   const [books, setBooks] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -42,18 +42,7 @@ const App = () => {
       quantity: 1,
     };
 
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (item) => item.bookId === data.bookId
-      );
-      if (existingItemIndex !== -1) {
-        const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity += data.quantity;
-        return updatedCart;
-      } else {
-        return [...prevCart, { ...data, quantity: data.quantity }];
-      }
-    });
+    addToCart(data);
   };
 
   return (
