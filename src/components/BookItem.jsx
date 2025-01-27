@@ -1,5 +1,7 @@
-import Button from "./Button";
+import { lazy } from "react";
 import PropTypes from "prop-types";
+
+const Button = lazy(() => import("shared/Button"));
 
 const BookItem = ({ book, onShowSingleBook, handleAddToCart }) => {
   const addToCart = (e) => {
