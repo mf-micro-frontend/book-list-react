@@ -2,19 +2,21 @@ import { useEffect, useState } from "react";
 import { fetchBooks } from "./api/api";
 import BookItem from "./components/BookItem";
 import { useGlobalContext } from "host/GlobalContext";
+import { Book } from "./types/book";
 
-const App = () => {
+const App: React.FC = () => {
   const { addToCart, setSelectedBook, searchText } = useGlobalContext();
 
-  const [books, setBooks] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [books, setBooks] = useState<Book[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const getBooksFromGoogleApi = async (query) => {
+  const getBooksFromGoogleApi = async (query: string): Promise<void> => {
     try {
       setIsLoading(true);
       const data = await fetchBooks(query);
       setBooks(data);
+      setError(null);
     } catch (err) {
       setError("Failed to fetch books");
       console.error(err);
@@ -25,19 +27,17 @@ const App = () => {
 
   useEffect(() => {
     getBooksFromGoogleApi(searchText);
-
-    return () => {};
   }, [searchText]);
 
-  const showSingleBook = (id) => {
+  const showSingleBook = (id: string): void => {
     console.log("selected book id", id);
     setSelectedBook(id);
   };
 
-  const addSingleBookToCart = (book) => {
+  const addSingleBookToCart = (book: Book): void => {
     const data = {
       title: book.volumeInfo.title,
-      image: book.volumeInfo.imageLinks?.thumbnail,
+      image: book.volumeInfo.imageLinks?.thumbnail || "",
       bookId: book.id,
       quantity: 1,
     };

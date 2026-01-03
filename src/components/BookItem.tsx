@@ -1,15 +1,25 @@
-import { lazy } from "react";
-import PropTypes from "prop-types";
+import { lazy, Suspense } from "react";
+import { Book } from "../types/book";
 
 const Button = lazy(() => import("shared/Button"));
 
-const BookItem = ({ book, onShowSingleBook, handleAddToCart }) => {
-  const addToCart = (e) => {
+interface BookItemProps {
+  book: Book;
+  onShowSingleBook: (id: string) => void;
+  handleAddToCart: (book: Book) => void;
+}
+
+const BookItem: React.FC<BookItemProps> = ({
+  book,
+  onShowSingleBook,
+  handleAddToCart,
+}) => {
+  const addToCart = (e: React.MouseEvent<HTMLButtonElement>): void => {
     e.stopPropagation();
     handleAddToCart(book);
   };
 
-  const showSingleBook = () => {
+  const showSingleBook = (): void => {
     onShowSingleBook(book.id);
   };
 
@@ -43,15 +53,14 @@ const BookItem = ({ book, onShowSingleBook, handleAddToCart }) => {
 
       {/* Add to Cart Button */}
       <div className="flex justify-center items-center p-4">
-        <Button onClick={addToCart}>Add to Cart</Button>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Button onClick={addToCart} variant="primary">
+            Add to Cart
+          </Button>
+        </Suspense>
       </div>
     </button>
   );
-};
-BookItem.propTypes = {
-  book: PropTypes.object.isRequired,
-  onShowSingleBook: PropTypes.func.isRequired,
-  handleAddToCart: PropTypes.func.isRequired,
 };
 
 export default BookItem;
